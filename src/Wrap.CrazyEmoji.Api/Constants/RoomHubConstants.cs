@@ -19,5 +19,6 @@ public static class RoomHubConstants
     public const string wordChecked = "wordChecked";
     public const string roundEnded = "roundEnded";
     public const string roundStarted = "roundStarted";
+    public const string lobbyMessageReceived = "lobbyMessageReceived";
     public const string Error = "Error";
 }

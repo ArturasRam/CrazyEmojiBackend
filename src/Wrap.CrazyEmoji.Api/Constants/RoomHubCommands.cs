@@ -14,5 +14,6 @@ public static class RoomHubCommands
     public const string getWord = "getWord";
     public const string sendEmojis = "sendEmojis";
     public const string checkWord = "checkWord";
+    public const string sendLobbyMessage = "sendLobbyMessage";
 
 }

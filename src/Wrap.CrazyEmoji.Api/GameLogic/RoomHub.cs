@@ -247,6 +247,46 @@ public class RoomHub(IRoomManager roomManager) : Hub
         }
     }
 
+    public async Task SendLobbyMessage(string message)
+    {
+        try
+        {
+            var (username, roomCode) = await _roomManager.GetCurrentUserDataAsync(Context.ConnectionId);
+            if (roomCode == "-1")
+            {
+                throw new ForbiddenException();
+            }
+
+            var normalizedMessage = (message ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(normalizedMessage))
+            {
+                return;
+            }
+
+            if (normalizedMessage.Length > 250)
+            {
+                normalizedMessage = normalizedMessage[..250];
+            }
+
+            await Clients.Group(roomCode).SendAsync(RoomHubConstants.lobbyMessageReceived, new
+            {
+                username,
+                message = normalizedMessage,
+                sentAtUtc = DateTime.UtcNow
+            });
+        }
+        catch (InvalidConnectionIdException)
+        {
+            await Clients.Caller.SendAsync(RoomHubConstants.Error,
+                $"{RoomHubCommands.sendLobbyMessage} {RoomHubErrors.forbidden}");
+        }
+        catch (ForbiddenException)
+        {
+            await Clients.Caller.SendAsync(RoomHubConstants.Error,
+                $"{RoomHubCommands.sendLobbyMessage} {RoomHubErrors.forbidden}");
+        }
+    }
+
     public async Task GetResults()
     {
         try
