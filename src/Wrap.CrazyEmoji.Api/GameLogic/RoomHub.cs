@@ -81,8 +81,8 @@ public class RoomHub(IRoomManager roomManager) : Hub
         try
         {
             var roomCode = await _roomManager.CreateRoom(Context.ConnectionId, roomName, category, rounds, roundDuration);
-            await Clients.Caller.SendAsync(RoomHubConstants.createdRoom, roomCode);
             await JoinRoom(roomCode);
+            await Clients.Caller.SendAsync(RoomHubConstants.createdRoom, roomCode);
         }
         catch (ForbiddenException)
         {
